@@ -48,6 +48,10 @@ zookeeper_data/
 # Jupyter
 .ipynb_checkpoints/
 
+# Node / Frontend
+node_modules/
+.vite/
+
 # Coverage
 htmlcov/
 .coverage

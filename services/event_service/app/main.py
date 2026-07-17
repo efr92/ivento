@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.events import router as events_router
+from app.api.v1.config import router as config_router
 from app.db.session import engine
 from app.db.base import Base
 from app.kafka.producer import kafka_producer
@@ -52,6 +53,7 @@ app.add_middleware(
 )
 
 app.include_router(events_router, prefix="/api/v1")
+app.include_router(config_router, prefix="/api/v1")
 
 
 @app.get("/health")

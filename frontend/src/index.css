@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Yandex Map fullscreen */
+.yandex-map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Custom scrollbar for event popup */
+.event-popup-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.event-popup-scroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}

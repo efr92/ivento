@@ -1,3 +1,4 @@
+import json
 import os
 
 
@@ -12,7 +13,14 @@ class Settings:
     REFRESH_TOKEN_EXPIRE_DAYS: int = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS", "7"))
     KAFKA_BOOTSTRAP_SERVERS: str = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://redis:6379/0")
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000"]
+
+    @property
+    def ALLOWED_ORIGINS(self) -> list[str]:
+        raw = os.getenv("ALLOWED_ORIGINS", '["http://localhost:3000"]')
+        try:
+            return json.loads(raw)
+        except (json.JSONDecodeError, TypeError):
+            return ["http://localhost:3000"]
 
 
 settings = Settings()
