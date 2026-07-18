@@ -107,8 +107,8 @@ services:
   # ============ SERVICES ============
   auth_service:
     build:
-      context: ./services/auth_service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/auth_service/Dockerfile
     container_name: auth_service
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres_auth:5432/auth_db
@@ -131,8 +131,8 @@ services:
 
   event_service:
     build:
-      context: ./services/event_service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/event_service/Dockerfile
     container_name: event_service
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres_events:5432/events_db
@@ -151,8 +151,8 @@ services:
 
   user_service:
     build:
-      context: ./services/user_service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/user_service/Dockerfile
     container_name: user_service
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres_auth:5432/auth_db
@@ -170,8 +170,8 @@ services:
 
   notification_service:
     build:
-      context: ./services/notification_service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: services/notification_service/Dockerfile
     container_name: notification_service
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092

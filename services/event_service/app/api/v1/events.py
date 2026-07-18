@@ -30,7 +30,7 @@ def get_event_service(
 async def get_nearby_events(
     latitude: float = Query(..., ge=-90, le=90),
     longitude: float = Query(..., ge=-180, le=180),
-    radius_km: float = Query(default=5.0, ge=0.1, le=100.0),
+    radius: float = Query(default=5.0, ge=0.1, le=100.0),
     category: Optional[EventCategory] = None,
     status: Optional[EventStatus] = EventStatus.ACTIVE,
     page: int = Query(default=1, ge=1),
@@ -40,7 +40,7 @@ async def get_nearby_events(
     filters = NearbyEventsFilterSchema(
         latitude=latitude,
         longitude=longitude,
-        radius_km=radius_km,
+        radius_km=radius,
         category=category,
         status=status,
         page=page,

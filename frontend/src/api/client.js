@@ -94,7 +94,7 @@ export async function createEvent(data) {
 
 export async function getNearbyEvents(lat, lon, radius = 50) {
   return request(
-    `/events/nearby?latitude=${lat}&longitude=${lon}&radius=${radius}&limit=100`
+    `/events/nearby?latitude=${lat}&longitude=${lon}&radius=${radius}&size=100`
   );
 }
 
