@@ -4,6 +4,7 @@ import asyncio
 from aiokafka import AIOKafkaConsumer
 from app.core.config import settings
 from app.services.notification_service import NotificationService
+from app.lang.messages import MESSAGES
 from shared.kafka_topics import KafkaTopics
 
 logger = logging.getLogger(__name__)
@@ -56,8 +57,8 @@ class NotificationConsumer:
     async def _notify_welcome(self, data: dict):
         await self._notification_service.send_email(
             to=data["email"],
-            subject="Добро пожаловать в События на карте!",
-            body=f"Привет, {data['username']}! Рады видеть вас."
+            subject=MESSAGES["welcome_subject"],
+            body=MESSAGES["welcome_body"].format(username=data["username"])
         )
 
     async def _notify_event_created(self, data: dict):

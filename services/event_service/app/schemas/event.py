@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, Field, field_validator
 from app.models.event import EventCategory, EventStatus
+from app.lang.messages import MESSAGES
 
 
 class LocationSchema(BaseModel):
@@ -25,7 +26,7 @@ class EventCreateSchema(BaseModel):
     @classmethod
     def validate_end_time(cls, v, info):
         if v and "start_time" in info.data and v <= info.data["start_time"]:
-            raise ValueError("end_time must be after start_time")
+            raise ValueError(MESSAGES["end_time_must_be_after_start"])
         return v
 
 

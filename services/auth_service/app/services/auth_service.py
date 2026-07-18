@@ -11,6 +11,7 @@ from app.core.security import (
     decode_token
 )
 from app.kafka.producer import KafkaProducer
+from app.lang.messages import MESSAGES
 from shared.kafka_topics import KafkaTopics
 import json
 
@@ -29,7 +30,7 @@ class AuthService:
         if existing.scalar_one_or_none():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User with this email or username already exists"
+                detail=MESSAGES["user_already_exists"]
             )
 
         user = User(
@@ -65,13 +66,13 @@ class AuthService:
         if not user or not verify_password(data.password, user.hashed_password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect email or password"
+                detail=MESSAGES["incorrect_email_or_password"]
             )
 
         if not user.is_active:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="User account is disabled"
+                detail=MESSAGES["account_disabled"]
             )
 
         return TokenSchema(
@@ -85,13 +86,13 @@ class AuthService:
             if payload.get("type") != "refresh":
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid token type"
+                    detail=MESSAGES["invalid_token_type"]
                 )
             user_id = int(payload["sub"])
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid refresh token"
+                detail=MESSAGES["invalid_refresh_token"]
             )
 
         result = await self.db.execute(select(User).where(User.id == user_id))
@@ -100,7 +101,7 @@ class AuthService:
         if not user or not user.is_active:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="User not found or inactive"
+                detail=MESSAGES["user_not_found_or_inactive"]
             )
 
         return TokenSchema(
@@ -112,7 +113,7 @@ class AuthService:
         try:
             payload = decode_token(token)
             if payload.get("type") != "access":
-                raise ValueError("Not an access token")
+                raise ValueError(MESSAGES["not_access_token"])
 
             result = await self.db.execute(
                 select(User).where(User.id == int(payload["sub"]))
@@ -120,7 +121,7 @@ class AuthService:
             user = result.scalar_one_or_none()
 
             if not user or not user.is_active:
-                raise ValueError("User not found")
+                raise ValueError(MESSAGES["user_not_found"])
 
             return {
                 "user_id": user.id,

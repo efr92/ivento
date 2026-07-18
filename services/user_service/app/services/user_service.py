@@ -8,6 +8,7 @@ from app.schemas.user import (
     UserProfileUpdateSchema,
     UserProfileResponseSchema
 )
+from app.lang.messages import MESSAGES
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ class UserService:
         if existing.scalar_one_or_none():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Profile already exists for this user"
+                detail=MESSAGES["profile_already_exists"]
             )
 
         profile = UserProfile(user_id=user_id, username=username)
@@ -56,7 +57,7 @@ class UserService:
         if not profile:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Profile not found"
+                detail=MESSAGES["profile_not_found"]
             )
         return UserProfileResponseSchema.model_validate(profile)
 
@@ -72,7 +73,7 @@ class UserService:
         if not profile:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Profile not found"
+                detail=MESSAGES["profile_not_found"]
             )
 
         update_data = data.model_dump(exclude_unset=True)
@@ -91,6 +92,6 @@ class UserService:
         if not profile:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Profile not found"
+                detail=MESSAGES["profile_not_found"]
             )
         return UserProfileResponseSchema.model_validate(profile)

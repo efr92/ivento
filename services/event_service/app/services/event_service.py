@@ -14,6 +14,7 @@ from app.schemas.event import (
 )
 from app.schemas.comment import CommentCreateSchema
 from app.kafka.producer import KafkaProducer
+from app.lang.messages import MESSAGES
 from app.services.geo_service import GeoService
 from shared.kafka_topics import KafkaTopics
 
@@ -108,7 +109,7 @@ class EventService:
         if not event:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Event {event_id} not found"
+                detail=MESSAGES["event_not_found"].format(event_id=event_id)
             )
         return event
 
@@ -123,7 +124,7 @@ class EventService:
         if event.creator_id != user_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Only event creator can update the event"
+                detail=MESSAGES["only_creator_can_update"]
             )
 
         update_data = data.model_dump(exclude_unset=True)
@@ -147,13 +148,13 @@ class EventService:
         if event.status != EventStatus.ACTIVE:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Cannot join inactive event"
+                detail=MESSAGES["cannot_join_inactive"]
             )
 
         if event.max_participants and event.current_participants >= event.max_participants:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Event is full"
+                detail=MESSAGES["event_is_full"]
             )
 
         existing = await self.db.execute(
@@ -167,7 +168,7 @@ class EventService:
         if existing.scalar_one_or_none():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Already joined this event"
+                detail=MESSAGES["already_joined"]
             )
 
         participant = EventParticipant(event_id=event_id, user_id=user_id)
@@ -186,7 +187,7 @@ class EventService:
             key=str(event_id)
         )
 
-        return {"message": "Successfully joined the event"}
+        return {"message": MESSAGES["joined_successfully"]}
 
     async def leave_event(self, event_id: int, user_id: int) -> dict:
         event = await self.get_event(event_id)
@@ -204,7 +205,7 @@ class EventService:
         if not participant:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Not a participant of this event"
+                detail=MESSAGES["not_a_participant"]
             )
 
         await self.db.delete(participant)
@@ -217,7 +218,7 @@ class EventService:
             key=str(event_id)
         )
 
-        return {"message": "Successfully left the event"}
+        return {"message": MESSAGES["left_successfully"]}
 
     async def add_comment(
         self,

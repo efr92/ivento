@@ -1,6 +1,7 @@
 import httpx
 from fastapi import HTTPException, Header, status
 from app.core.config import settings
+from shared.messages import SHARED_MESSAGES
 
 
 async def get_current_user(
@@ -9,7 +10,7 @@ async def get_current_user(
     if not authorization.startswith("Bearer "):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authorization header format"
+            detail=SHARED_MESSAGES["invalid_auth_header"]
         )
 
     async with httpx.AsyncClient(timeout=5.0) as client:
@@ -21,11 +22,11 @@ async def get_current_user(
             if response.status_code != 200:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Invalid or expired token"
+                    detail=SHARED_MESSAGES["invalid_or_expired_token"]
                 )
             return response.json()
         except httpx.TimeoutException:
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="Auth service unavailable"
+                detail=SHARED_MESSAGES["auth_service_unavailable"]
             )
